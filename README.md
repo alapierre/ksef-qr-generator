@@ -1,0 +1,29 @@
+# KSeF QR Code II Generator
+
+Generate QR Code II for KSeF invoices visualization in minutes.
+
+## Motivation
+
+This project was created as a pragmatic response to reality — not theory.
+
+According to the official KSeF documentation, the QR Code II verification mechanism is supposed to be based on a cryptographic signature calculated over the hash of the invoice XML on which the QR code is placed. In theory, this should ensure integrity and bind the QR code to the actual content of the invoice.
+
+In practice, however, KSeF verifies this signature rather loosely.
+
+The uncomfortable fact is that KSeF currently accepts a QR Code II as fully valid even if the signature was calculated over any arbitrary SHA-256 value — not necessarily the hash of the invoice XML itself. As long as the signature structure looks correct, the system is satisfied.
+
+This tool does not exist to encourage bypassing requirements or weakening security on purpose. Quite the opposite.
+
+The motivation behind it is to help those who:
+
+- are still in the process of designing a proper, secure storage for KSeF certificates,
+- have not yet implemented hardware-backed key protection, HSMs, or dedicated key vaults,
+- or simply need an emergency fallback to keep their invoicing process operational.
+
+From a security perspective, storing a private key used for signing is not trivial. It requires time, architecture decisions, threat modeling, and a careful implementation. Pretending otherwise would be irresponsible.
+
+Since the KSeF platform itself currently does not strictly enforce what it formally requires, this tool provides a controlled and transparent workaround — clearly exposing the gap, not hiding it.
+
+Think of it as a temporary life raft, not a long-term security strategy.
+
+Happy KSeFing!
