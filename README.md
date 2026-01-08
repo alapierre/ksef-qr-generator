@@ -26,4 +26,6 @@ Since the KSeF platform itself currently does not strictly enforce what it forma
 
 Think of it as a temporary life raft, not a long-term security strategy.
 
+You can download binaries for Windows and Linux on the releases page on GitHub.
+
 Happy KSeFing!
