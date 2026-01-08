@@ -4,11 +4,11 @@ Generate QR Code II for KSeF invoices visualization in minutes.
 
 Are you wondering whether it is possible to use a single, static QR Code II and place it on all invoice visualizations 👀?
 
-Of course it is .
+Of course, it is.
 
-During verification, KSeF does not actually validate what has been signed. If your certificate is valid and you have the authority to issue invoices on behalf of the specified NIP, the QR code will pass verification successfully.
+During verification, KSeF does not actually validate what has been signed. If your certificate is valid, and you have the authority to issue invoices on behalf of the specified NIP, the QR code will pass verification successfully.
 
-How can this be proven 🧭 ?
+How can this be proven 🧭?
 
 Sign any file from your computer using a valid KSeF certificate — or sign nothing at all (in which case the application will sign the default text: “KSeF is dead baby, KSeF is dead…”). Then verify the QR Code by scanning it with your phone or by opening the link generated and displayed in the console.
 
@@ -20,11 +20,11 @@ This project was created as a pragmatic response to reality — not theory.
 
 According to the official KSeF documentation, the QR Code II verification mechanism is supposed to be based on a cryptographic signature calculated over the hash of the invoice XML on which the QR code is placed. In theory, this should ensure integrity and bind the QR code to the actual content of the invoice.
 
-In practice, however, KSeF verifies this signature rather loosely 🚧.
+In practice, however, KSeF verifies this signature rather loosely.
 
-The uncomfortable fact is that KSeF currently accepts a QR Code II as fully valid even if the signature was calculated over any arbitrary SHA-256 value — not necessarily the hash of the invoice XML itself. As long as the signature structure looks correct, the system is satisfied.
+The uncomfortable fact is that KSeF currently accepts 🔐 a QR Code II as fully valid even if the signature was calculated over any arbitrary SHA-256 value — not necessarily the hash of the invoice XML itself. As long as the signature structure looks correct, the system is satisfied.
 
-This tool does not exist to encourage bypassing requirements or weakening security on purpose. Quite the opposite.
+This tool does not exist to encourage bypassing 🚧 requirements or weakening security on purpose. Quite the opposite.
 
 The motivation behind it is to help those who:
 
