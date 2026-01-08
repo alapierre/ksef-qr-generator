@@ -1,2 +1,4 @@
 .idea
 *.iml
+/cmd/qr-gen/qr-gen
+/cmd/qr-gen/qr-gen.exe

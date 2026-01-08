@@ -5,7 +5,7 @@ VERSION ?= $(shell \
 
 ROOT_DIR=../..
 
-LDFLAGS = -w -s -X 'github.com/alapierre/ksef-qr-generator.Version=$(VERSION)'
+LDFLAGS = -w -s -X 'github.com/alapierre/ksef-qr-generator/version.Version=$(VERSION)'
 
 build:
 	CGO_ENABLED=0 go build -ldflags="$(LDFLAGS)" -a -installsuffix cgo .

@@ -4,10 +4,11 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"io"
-	"ksef-qr-generator/version"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/alapierre/ksef-qr-generator/version"
 
 	"github.com/akamensky/argparse"
 	"github.com/alapierre/go-ksef-client/ksef"
