@@ -26,6 +26,20 @@ Since the KSeF platform itself currently does not strictly enforce what it forma
 
 Think of it as a temporary life raft, not a long-term security strategy.
 
+## Usage
+
+````shell
+qr-gen -c sigining_cert.crt -k sigining_cert.key -n 1111111111
+````
+
+or with real data:
+
+````shell
+qr-gen -c sigining_cert.crt -k sigining_cert.key -n 1111111111 --in invoice.xml
+````
+
+If you set `KSEF_KEY_PASSWORD` environment variable, you will be not prompted for the password.
+
 You can download binaries for Windows and Linux on the releases page on GitHub.
 
 Happy KSeFing!

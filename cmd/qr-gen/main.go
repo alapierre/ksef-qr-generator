@@ -27,7 +27,12 @@ func main() {
 	env := parser.String("e", "env", &argparse.Options{Required: false, Help: "Środowisko (test, demo, prod)", Default: "test"})
 	seller := parser.String("s", "seller-nip", &argparse.Options{Required: false, Help: "NIP sprzedawcy, jeśli inny niż NIP wystawcy faktury"})
 	nip := parser.String("n", "context-nip", &argparse.Options{Required: true, Help: "NIP wystawcy faktury (kontekstu KSeF)"})
-	out := parser.String("o", "out", &argparse.Options{Required: false, Help: "ścieżka bazowa do zapisu QR Code, brak oznacza zapis w bieżącym katalogu"})
+	out := parser.String("o", "out", &argparse.Options{Required: false, Help: "Ścieżka bazowa do zapisu QR Code, brak oznacza zapis w bieżącym katalogu"})
+
+	inPath := parser.String("i", "in", &argparse.Options{
+		Required: false,
+		Help:     "Opcjonalnie, plik XML faktury (lub inny, dowolny który ma zostać 'podpisany'), niezależnie od tego co podpiszemy, kod QR II i tak będzie ważny. Użyj '-' aby czytać ze stdin",
+	})
 
 	err := parser.Parse(os.Args)
 	if err != nil {
@@ -84,7 +89,24 @@ func main() {
 		seller = nip
 	}
 
-	sum := sha256.Sum256([]byte("KSeF is dead, baby, KSeF is dead..."))
+	var sum [32]byte
+	switch strings.TrimSpace(*inPath) {
+	case "":
+		fmt.Println("Używam domyślnej treści zamiast realnej faktury - bez obaw, kod QR i tak będzie ważny")
+		sum = sha256.Sum256([]byte("KSeF is dead, baby, KSeF is dead..."))
+	case "-":
+		sum = shaOrDie(os.Stdin)
+	default:
+		f, err := os.Open(*inPath)
+		if err != nil {
+			fmt.Println("Błąd otwarcia pliku do podpisania: ", err)
+			os.Exit(1)
+		}
+		defer func() { _ = f.Close() }()
+
+		sum = shaOrDie(f)
+	}
+
 	url, err := qr.GenerateCertificateVerificationLink(
 		e,
 		qr.CtxNip,
@@ -115,6 +137,19 @@ func main() {
 	}
 
 	fmt.Printf("QR kod saved %s. Your visualization will be formally correct. Substantively… maybe. 😉 Happy KSeFing!\n", outPath)
+}
+
+func shaOrDie(r io.Reader) [32]byte {
+	var sum [32]byte
+
+	h := sha256.New()
+	if _, err := io.Copy(h, r); err != nil {
+		fmt.Println("Błąd liczenia sha z zawartości pliku do podpisu", err)
+		os.Exit(1)
+	}
+	copy(sum[:], h.Sum(nil))
+
+	return sum
 }
 
 func ReadPassword(prompt string) (string, error) {
