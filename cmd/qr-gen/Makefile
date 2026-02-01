@@ -13,9 +13,11 @@ build:
 windows:
 	GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="$(LDFLAGS)"
 
+mac:
+	CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -trimpath -ldflags "$(LDFLAGS)" -o qr-gen-darwin-arm64 .
+
 push:
 	itrust-updater push --artifact-path qr-gen --repo-id 'ksef' --app-id 'qr-gen' --version $(VERSION) --use-keyring
-	@if [ -f qr-gen.exe ]; then itrust-updater push --artifact-path qr-gen.exe --repo-id 'ksef' --app-id 'qr-gen' --version $(VERSION) --use-keyring
 
 clean:
 	rm -f itrust-updater

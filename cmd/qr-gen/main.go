@@ -28,6 +28,7 @@ func main() {
 	seller := parser.String("s", "seller-nip", &argparse.Options{Required: false, Help: "NIP sprzedawcy, jeśli inny niż NIP wystawcy faktury"})
 	nip := parser.String("n", "context-nip", &argparse.Options{Required: true, Help: "NIP wystawcy faktury (kontekstu KSeF)"})
 	out := parser.String("o", "out", &argparse.Options{Required: false, Help: "Ścieżka bazowa do zapisu QR Code, brak oznacza zapis w bieżącym katalogu"})
+	red := parser.String("r", "redirect", &argparse.Options{Required: false, Help: "Ścieżka do pliku, w którym mają być zapisywane podpisane linki (dopisywanie linia po linii)"})
 
 	inPath := parser.String("i", "in", &argparse.Options{
 		Required: false,
@@ -124,6 +125,12 @@ func main() {
 
 	fmt.Printf("Link wygenerowany dla NIP sprzedawcy %s, kontekst KSeF (wystawca) %s, środowisko: %s nr seryjny certyfikatu %s\n", *seller, *nip, e.Name(), serial)
 	fmt.Println(url)
+	if *red != "" {
+		err := appendLine(*red, fmt.Sprintf("NIP sprzedawcy %s, kontekst KSeF (wystawca) %s, nr seryjny certyfikatu: %s, link: %s", *nip, *seller, serial, url))
+		if err != nil {
+			fmt.Printf("błąd zapisu informacji wyjściowej do pliku %s: %s\n", *red, err)
+		}
+	}
 
 	img, err := png.Qr(url)
 	if err != nil {
@@ -160,4 +167,23 @@ func ReadPassword(prompt string) (string, error) {
 	}
 	fmt.Println() // Add a newline after the password entry
 	return strings.TrimSpace(string(bytePassword)), nil
+}
+
+func appendLine(path, line string) error {
+
+	dir := filepath.Dir(path)
+	if dir != "." {
+		if err := os.MkdirAll(dir, 0o755); err != nil {
+			return err
+		}
+	}
+
+	f, err := os.OpenFile(path, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0o644)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	_, err = fmt.Fprintln(f, line)
+	return err
 }
