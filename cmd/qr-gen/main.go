@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/alapierre/ksef-qr-generator/bmp"
 	"github.com/alapierre/ksef-qr-generator/version"
 
 	"github.com/akamensky/argparse"
@@ -29,6 +30,8 @@ func main() {
 	nip := parser.String("n", "context-nip", &argparse.Options{Required: true, Help: "NIP wystawcy faktury (kontekstu KSeF)"})
 	out := parser.String("o", "out", &argparse.Options{Required: false, Help: "Ścieżka bazowa do zapisu QR Code, brak oznacza zapis w bieżącym katalogu"})
 	red := parser.String("r", "redirect", &argparse.Options{Required: false, Help: "Ścieżka do pliku, w którym mają być zapisywane podpisane linki (dopisywanie linia po linii)"})
+
+	format := parser.String("f", "format", &argparse.Options{Required: false, Help: "Format wyjściowy obrazka (png lub bmp)", Default: "png"})
 
 	inPath := parser.String("i", "in", &argparse.Options{
 		Required: false,
@@ -132,11 +135,20 @@ func main() {
 		}
 	}
 
-	img, err := png.Qr(url)
+	var img []byte
+	var ext string
+	if *format == "png" {
+		img, err = png.Qr(url)
+		ext = "png"
+	} else {
+		img, err = bmp.Qr(url)
+		ext = "bmp"
+	}
+
 	if err != nil {
 		return
 	}
-	outPath := filepath.Join(*out, fmt.Sprintf("%s_qr2.png", *nip))
+	outPath := filepath.Join(*out, fmt.Sprintf("%s_qr2.%s", *nip, ext))
 	err = os.WriteFile(outPath, img, 0o644)
 	if err != nil {
 		fmt.Println("Błąd zapisu QR kodu: ", err)

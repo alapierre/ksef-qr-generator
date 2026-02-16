@@ -2,3 +2,9 @@
 *.iml
 /cmd/qr-gen/qr-gen
 /cmd/qr-gen/qr-gen.exe
+/cmd/qr-gen/out.txt
+/cmd/qr-gen/qr-gen-darwin-arm64
+/*.png
+/*.bmp
+cmd/qr-gen/*.png
+cmd/qr-gen/*.bmp

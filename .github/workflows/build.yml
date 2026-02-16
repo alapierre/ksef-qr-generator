@@ -1,0 +1,24 @@
+name: Build
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+# Explicitly drop all permissions.
+# Permissions will be granted to individual jobs as needed.
+permissions: { }
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6.0.2
+      - uses: actions/setup-go@v6.2.0
+        with:
+          go-version-file: go.mod
+          cache: true
+      - name: Build
+        run: cd cmd/qr-gen && go build
